@@ -38,6 +38,59 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         // TODO: Step 11 implement the onReceive method
+        if (intent.action == ACTION_GEOFENCE_EVENT) {
+            val geofencingEvent = GeofencingEvent.fromIntent(intent)
+
+            //In the case there is an error, you will want to understand what went wrong.
+            if (geofencingEvent.hasError()) {
+                //errorMessage() returns the error String for a geofencing error code
+                val errorMessage = errorMessage(context, geofencingEvent.errorCode)
+                Log.e(TAG, errorMessage)
+                return
+            }
+
+            if (geofencingEvent.geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
+
+                //if the triggering Geofence's array is not empty, set the fenceID on the first
+                //Geofence's requestId. We would only have one Geofence active at a time, so if the
+                //array is non-empty,then there would only be one for us to interact with. If the
+                //array is empty, then there would only be one for us to interact with. If the array
+                //is empty, log a message and return.
+                Log.v(TAG, context.getString(R.string.geofence_entered))
+                val fenceId = when {
+                    //triggeringGeofences() returns a list of Geofences.
+                    geofencingEvent.triggeringGeofences.isNotEmpty() ->
+                        geofencingEvent.triggeringGeofences[0].requestId
+                    else -> {
+                        Log.e(TAG, "No Geofence Trigger Found! Abort mission!")
+                        return
+                    }
+                }
+
+                //Check that the geofence is consistent with the constants listed in GeofencesUtil.kt.
+                //LANDMARK_DATA is an array of LandmarkDataObjects
+                //indexOfFirst the index of the first element matching the given predicate or -1 if the
+                //array does not contain such an element
+                val foundIndex = GeofencingConstants.LANDMARK_DATA.indexOfFirst {
+                    it.id == fenceId
+                }
+                if ( -1 == foundIndex ) {
+                    Log.e(TAG, "Unknown Geofence: Abort Mission")
+                    return
+                }
+
+                //If your code has gotten this far, the user has found a geofence. Send a notification
+                //telling them the good news.
+                val notificationManager = ContextCompat.getSystemService(
+                    context,
+                    NotificationManager::class.java
+                ) as NotificationManager
+
+                notificationManager.sendGeofenceEnteredNotification(
+                    context, foundIndex
+                )
+            }
+        }
     }
 }
 

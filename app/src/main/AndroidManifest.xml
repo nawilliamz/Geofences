@@ -20,6 +20,8 @@
 
 <!--    TODO: Step 1 add in permissions for fine location and background-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <application
@@ -32,7 +34,8 @@
 
         <activity android:name=".HuntMainActivity"
             android:label="@string/title_activity_hunt"
-            android:launchMode="singleInstance">
+            android:launchMode="singleInstance"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,6 +43,12 @@
             </intent-filter>
         </activity>
         <receiver android:name=".GeofenceBroadcastReceiver"/>
+<!--        <service-->
+<!--            android:name="MyForegroundService"-->
+<!--            android:foregroundServiceType="location">-->
+<!--        </service>-->
     </application>
+
+
 
 </manifest>

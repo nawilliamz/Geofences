@@ -23,7 +23,7 @@ android {
     defaultConfig {
         applicationId "com.example.android.treasureHunt"
         minSdkVersion 19
-        targetSdkVersion 30
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -45,6 +45,11 @@ android {
         enabled = true
         enabledForTests = true
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
     namespace 'com.example.android.treasureHunt'
 }
 
